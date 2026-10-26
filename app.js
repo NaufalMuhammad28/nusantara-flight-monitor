@@ -7,7 +7,7 @@
 
 /* ---------- Konfigurasi ---------- */
 const CFG = {
-  dataPath: 'data/',   // folder CSV
+  dataPath: '',   // folder CSV
   otpLimit: 15,        // menit; standar OTP (≤ 15 menit = tepat waktu)
   mapTopN: 40,         // jumlah rute yang digambar di peta
   hotN: 5,             // rute tersibuk yang diberi animasi
