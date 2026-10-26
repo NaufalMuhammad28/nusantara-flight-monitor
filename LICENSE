@@ -1,0 +1,20 @@
+Copyright (c) 2026 M. Naufal Zamani. All rights reserved.
+
+Nusantara Flight Monitor — dashboard, kode sumber (HTML, CSS, JavaScript, Python),
+notebook analisis, desain, dan teks interpretasi di repositori ini adalah karya
+M. Naufal Zamani.
+
+Anda BOLEH melihat dan membaca kode ini untuk keperluan penilaian portofolio,
+rekrutmen, dan pembelajaran pribadi.
+
+Anda TIDAK BOLEH, tanpa izin tertulis dari pemilik hak cipta:
+  - menyalin, memodifikasi, atau mendistribusikan ulang sebagian maupun seluruh karya ini;
+  - mengklaim karya ini (atau turunannya) sebagai karya sendiri, termasuk untuk
+    portofolio, tugas kuliah, lomba, atau lamaran kerja;
+  - menggunakan karya ini untuk tujuan komersial.
+
+Pengecualian: pustaka pihak ketiga (Leaflet, Chart.js, PapaParse, KaTeX), font,
+peta dasar, foto Unsplash, dan logo maskapai tetap tunduk pada lisensi dan
+merek dagang pemiliknya masing-masing. Data di folder data/ adalah data simulasi.
+
+Kontak untuk izin penggunaan: M. Naufal Zamani.

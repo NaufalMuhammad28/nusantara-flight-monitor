@@ -1,0 +1,574 @@
+       <!doctype html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#001d39">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="copyright" content="© 2026 M. Naufal Zamani. All rights reserved.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%23001d39'/%3E%3Cpath fill='%237bbde8' d='M19 15v-1.6l-6.4-4V4.6a1.2 1.2 0 0 0-2.4 0v4.8L4 13.4V15l6.2-2v3.6L8.6 17.8V19l3-.8 3 .8v-1.2l-1.6-1.2V13z'/%3E%3C/svg%3E">
+  <title>Nusantara Flight Monitor</title>
+  <meta name="author" content="M. Naufal Zamani">
+  <meta name="description" content="Indonesian Domestic Flight Monitoring — dashboard analitik & decision support oleh M. Naufal Zamani (data simulasi).">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+
+  <script>
+    (function () {
+      var t = null, c = null;
+      try { t = localStorage.getItem('nfm-theme'); c = localStorage.getItem('nfm-sidebar'); } catch (e) {}
+      if (!t) t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.dataset.theme = t;
+      if (c === 'collapsed') document.documentElement.classList.add('sb-collapsed');
+    })();
+  </script>
+</head>
+<body>
+
+  <!-- ===================== SIDEBAR ===================== -->
+  <aside class="sidebar" id="sidebar" aria-label="Navigasi utama">
+    <div class="sb-top">
+      <a class="sb-logo" href="#overview" title="Nusantara Flight Monitor">
+        <span class="sb-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/></svg>
+        </span>
+        <span class="sb-name">Nusantara<small>Flight Monitor</small></span>
+      </a>
+      <button class="sb-toggle" id="btnCollapse" aria-label="Lipat atau buka sidebar" title="Lipat / buka sidebar">
+        <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+      </button>
+    </div>
+
+    <form class="sb-search" id="searchForm" role="search" autocomplete="off">
+      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M10 2a8 8 0 0 1 6.3 12.9l5.4 5.4-1.4 1.4-5.4-5.4A8 8 0 1 1 10 2zm0 2a6 6 0 1 0 0 12 6 6 0 0 0 0-12z"/></svg>
+      <input id="searchInput" list="searchList" placeholder="Cari bandara atau maskapai" aria-label="Cari bandara atau maskapai">
+      <datalist id="searchList"></datalist>
+    </form>
+
+    <nav class="sb-nav">
+      <span class="sb-label">Pantau</span>
+      <a href="#overview" class="sb-link active" data-sec="overview"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M3 3h8v10H3zm10 0h8v6h-8zM3 15h8v6H3zm10-4h8v10h-8z"/></svg><span>Ringkasan</span></a>
+      <a href="#insight" class="sb-link" data-sec="insight"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M9 21h6v-1H9zm3-19a7 7 0 0 0-4 12.7V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.3A7 7 0 0 0 12 2z"/></svg><span>Insight</span></a>
+      <a href="#peta" class="sb-link" data-sec="peta"><svg viewBox="0 0 24 24"><path fill="currentColor" d="m15 5-6-2-6 2v16l6-2 6 2 6-2V3zm0 14-6-2V5l6 2z"/></svg><span>Peta rute</span></a>
+      <a href="#maskapai" class="sb-link" data-sec="maskapai"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/></svg><span>Maskapai</span></a>
+      <a href="#analitik" class="sb-link" data-sec="analitik"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M3 21V3h2v16h16v2zm4-4V10h3v7zm5 0V6h3v11zm5 0v-4h3v4z"/></svg><span>Analitik delay</span></a>
+      <a href="#pola" class="sb-link" data-sec="pola"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M3 3h5v5H3zm6.5 0h5v5h-5zM16 3h5v5h-5zM3 9.5h5v5H3zm6.5 0h5v5h-5zM16 9.5h5v5h-5zM3 16h5v5H3zm6.5 0h5v5h-5zM16 16h5v5h-5z"/></svg><span>Musim &amp; jam sibuk</span></a>
+      <span class="sb-label">Putuskan</span>
+      <a href="#simulasi" class="sb-link" data-sec="simulasi"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M4 7h10v2H4zm12-2h2v6h-2zm-12 8h4v2H4zm6-2h2v6h-2zm4 2h6v2h-6zM18 7h2v2h-2z"/></svg><span>Simulasi kebijakan</span></a>
+      <a href="#model" class="sb-link" data-sec="model"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a2 2 0 0 1 2 2v1h3a2 2 0 0 1 2 2v3h1a2 2 0 1 1 0 4h-1v3a2 2 0 0 1-2 2h-3v1a2 2 0 1 1-4 0v-1H7a2 2 0 0 1-2-2v-3H4a2 2 0 1 1 0-4h1V7a2 2 0 0 1 2-2h3V4a2 2 0 0 1 2-2zm-3 7a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm6 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm-6 5v2h6v-2z"/></svg><span>Risiko delay (ML)</span></a>
+      <a href="#statistik" class="sb-link" data-sec="statistik"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M5 4h14v2H8.4l5 6-5 6H19v2H5v-2l5.4-6L5 6z"/></svg><span>Model statistik</span></a>
+      <a href="#rute" class="sb-link" data-sec="rute"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M3 4h18v4H3zm0 6h18v4H3zm0 6h18v4H3z"/></svg><span>Kinerja rute</span></a>
+      <span class="sb-label">Alat</span>
+      <button class="sb-link" type="button" data-action="fids"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M2 4h20v14H2zm2 2v10h16V6zm2 2h5v2H6zm7 0h5v2h-5zm-7 4h5v2H6zm7 0h5v2h-5zM8 20h8v2H8z"/></svg><span>Papan keberangkatan</span></button>
+      <button class="sb-link" type="button" data-action="brief"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M6 2h9l5 5v15H6zm8 1.5V8h4.5zM8 12h8v1.5H8zm0 3h8v1.5H8zm0 3h5v1.5H8z"/></svg><span>Unduh brief eksekutif</span></button>
+      <button class="sb-link" id="btnLoad" type="button"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M5 20h14v-2H5zm7-16-5 5h3v6h4V9h3z"/></svg><span>Muat CSV</span></button>
+      <button class="sb-link" id="btnTheme" type="button">
+        <svg class="i-moon" viewBox="0 0 24 24"><path fill="currentColor" d="M20 15.3A8.5 8.5 0 0 1 8.7 4 8.5 8.5 0 1 0 20 15.3z"/></svg>
+        <svg class="i-sun" viewBox="0 0 24 24"><path fill="currentColor" d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0-5 1.5 3h-3zm0 20-1.5-3h3zM2 12l3-1.5v3zm20 0-3 1.5v-3z"/></svg>
+        <span class="theme-label">Mode malam</span></button>
+      <input type="file" id="fileInput" accept=".csv,.json" multiple hidden>
+    </nav>
+
+    <div class="sb-author">
+      <div class="avatar" aria-hidden="true">MN</div>
+      <div class="author-txt">
+        <small>Dianalisis oleh</small>
+        <b>M. Naufal Zamani</b>
+        <span>Magister Statistika ITS</span>
+      </div>
+    </div>
+  </aside>
+  <div class="sb-backdrop" id="sbBackdrop"></div>
+
+  <div class="main">
+    <header class="mobilebar">
+      <button class="sb-toggle" id="btnMobileMenu" aria-label="Buka menu">
+        <svg viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+      </button>
+      <b>Nusantara Flight Monitor</b>
+      <span class="mb-clock" id="clockMobile">--:--</span>
+    </header>
+
+    <!-- ===================== HERO ===================== -->
+    <section class="hero" id="overview">
+      <div class="hero-photo" id="heroPhoto" aria-hidden="true"></div>
+      <svg class="hero-art" viewBox="0 0 1600 640" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+        <defs>
+          <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#0a1630"/>
+            <stop offset=".42" stop-color="#1a3561"/>
+            <stop offset=".64" stop-color="#5a4f6e"/>
+            <stop offset=".74" stop-color="#c0805c"/>
+            <stop offset=".78" stop-color="#eebf7c"/>
+          </linearGradient>
+          <radialGradient id="sunGlow" cx="1180" cy="498" r="420" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#ffd99a" stop-opacity=".85"/>
+            <stop offset=".35" stop-color="#e9a36a" stop-opacity=".35"/>
+            <stop offset="1" stop-color="#e9a36a" stop-opacity="0"/>
+          </radialGradient>
+          <linearGradient id="ground" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#0d1a33"/>
+            <stop offset="1" stop-color="#050c1a"/>
+          </linearGradient>
+          <linearGradient id="runway" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#1a2843"/>
+            <stop offset="1" stop-color="#0f1b31"/>
+          </linearGradient>
+          <linearGradient id="fade" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#081329" stop-opacity=".94"/>
+            <stop offset=".42" stop-color="#081329" stop-opacity=".72"/>
+            <stop offset=".7" stop-color="#081329" stop-opacity="0"/>
+          </linearGradient>
+          <path id="takeoff" d="M760 556 C 900 540, 1040 470, 1230 330 S 1520 120, 1680 60"/>
+        </defs>
+
+        <rect width="1600" height="500" fill="url(#sky)"/>
+        <rect width="1600" height="500" fill="url(#sunGlow)"/>
+        <g fill="#fff" class="stars">
+          <circle cx="120" cy="60" r="1.2"/><circle cx="260" cy="130" r=".9"/><circle cx="420" cy="40" r="1.1"/><circle cx="560" cy="110" r=".8"/>
+          <circle cx="690" cy="55" r="1.3"/><circle cx="840" cy="140" r=".8"/><circle cx="980" cy="70" r="1"/><circle cx="1110" cy="30" r="1.2"/>
+          <circle cx="1270" cy="95" r=".9"/><circle cx="1400" cy="45" r="1.1"/><circle cx="1520" cy="120" r=".8"/><circle cx="345" cy="205" r=".7"/>
+          <circle cx="760" cy="215" r=".7"/><circle cx="1480" cy="230" r=".6"/><circle cx="60" cy="180" r=".8"/>
+        </g>
+
+        <!-- gunung api di cakrawala -->
+        <path d="M0 500 L110 470 L250 405 L300 392 L322 398 L360 420 L520 478 L640 500 Z" fill="#2c3a5e" opacity=".85"/>
+        <path d="M300 392 q 6 -14 14 -26 q 4 10 8 32" fill="none" stroke="#c9b3a0" stroke-opacity=".25" stroke-width="3"/>
+        <path d="M520 500 L660 462 L760 438 L860 470 L980 500 Z" fill="#26345a" opacity=".8"/>
+        <path d="M1320 500 L1440 474 L1530 458 L1600 470 L1600 500 Z" fill="#2a3659" opacity=".75"/>
+
+        <!-- terminal beratap pendopo -->
+        <g class="terminal">
+          <rect x="120" y="458" width="880" height="46" fill="#0c1832"/>
+          <g fill="#0f1d3b">
+            <path d="M150 460 L196 430 L274 430 L320 460 Z"/><path d="M196 430 L226 412 L244 412 L274 430 Z"/>
+            <path d="M340 460 L386 430 L464 430 L510 460 Z"/><path d="M386 430 L416 412 L434 412 L464 430 Z"/>
+            <path d="M530 460 L576 430 L654 430 L700 460 Z"/><path d="M576 430 L606 412 L624 412 L654 430 Z"/>
+            <path d="M720 460 L766 430 L844 430 L890 460 Z"/><path d="M766 430 L796 412 L814 412 L844 430 Z"/>
+          </g>
+          <g fill="#f4c983" class="windows">
+            <rect x="160" y="472" width="150" height="5" opacity=".75"/><rect x="350" y="472" width="150" height="5" opacity=".6"/>
+            <rect x="540" y="472" width="150" height="5" opacity=".8"/><rect x="730" y="472" width="150" height="5" opacity=".65"/>
+            <rect x="160" y="484" width="150" height="3" opacity=".35"/><rect x="350" y="484" width="150" height="3" opacity=".4"/>
+            <rect x="540" y="484" width="150" height="3" opacity=".3"/><rect x="730" y="484" width="150" height="3" opacity=".45"/>
+          </g>
+        </g>
+
+        <!-- menara ATC -->
+        <g class="tower">
+          <path d="M1060 500 L1066 330 L1092 330 L1098 500 Z" fill="#0c1832"/>
+          <path d="M1040 330 L1118 330 L1108 300 L1050 300 Z" fill="#102246"/>
+          <path d="M1052 304 L1106 304 L1112 324 L1046 324 Z" fill="#8fdde4" opacity=".75"/>
+          <rect x="1044" y="292" width="70" height="9" fill="#0c1832"/>
+          <rect x="1077" y="262" width="3" height="30" fill="#0c1832"/>
+          <circle cx="1078.5" cy="260" r="3.5" fill="#ff5a4e" class="beacon"/>
+        </g>
+
+        <rect y="498" width="1600" height="142" fill="url(#ground)"/>
+
+        <!-- landasan pacu dalam perspektif -->
+        <path d="M770 502 L830 502 L1260 640 L340 640 Z" fill="url(#runway)"/>
+        <g fill="#ffffff" opacity=".7">
+          <rect x="798" y="508" width="4" height="5"/><rect x="796" y="522" width="7" height="8"/><rect x="794" y="542" width="11" height="12"/>
+          <rect x="791" y="570" width="17" height="18"/><rect x="787" y="608" width="25" height="28"/>
+        </g>
+        <g class="edge-lights" fill="#ffd994">
+          <circle cx="772" cy="503" r="1.5"/><circle cx="752" cy="512" r="1.8"/><circle cx="724" cy="525" r="2.1"/><circle cx="684" cy="543" r="2.5"/>
+          <circle cx="628" cy="568" r="3"/><circle cx="548" cy="600" r="3.6"/><circle cx="440" cy="636" r="4.4"/>
+          <circle cx="828" cy="503" r="1.5"/><circle cx="848" cy="512" r="1.8"/><circle cx="876" cy="525" r="2.1"/><circle cx="916" cy="543" r="2.5"/>
+          <circle cx="972" cy="568" r="3"/><circle cx="1052" cy="600" r="3.6"/><circle cx="1160" cy="636" r="4.4"/>
+        </g>
+        <g fill="#5fb3ff" opacity=".8">
+          <circle cx="230" cy="560" r="2"/><circle cx="300" cy="575" r="2"/><circle cx="1330" cy="560" r="2"/><circle cx="1410" cy="580" r="2"/>
+          <circle cx="160" cy="600" r="2.4"/><circle cx="1480" cy="610" r="2.4"/>
+        </g>
+
+        <!-- pesawat lepas landas -->
+        <g class="plane">
+          <g transform="scale(.9) translate(-60 -10)">
+            <path d="M0 10 C 22 3, 96 1, 116 6 C 126 9, 126 13, 116 15 L 20 17 C 8 17, 2 14, 0 10 Z" fill="#0b1630"/>
+            <path d="M8 10 L 0 -14 L 13 -14 L 30 7 Z" fill="#0b1630"/>
+            <path d="M50 13 L 30 34 L 44 34 L 76 14 Z" fill="#0b1630"/>
+            <ellipse cx="58" cy="20" rx="10" ry="3.6" fill="#0b1630"/>
+            <circle cx="36" cy="33" r="2" fill="#ff5a4e" class="nav-red"/>
+            <circle cx="117" cy="10" r="1.6" fill="#ffffff" class="nav-white"/>
+          </g>
+          <animateMotion dur="14s" repeatCount="indefinite" rotate="auto" keyTimes="0;0.55;1" keyPoints="0;1;1" calcMode="linear">
+            <mpath href="#takeoff"/>
+          </animateMotion>
+        </g>
+
+        <rect width="1600" height="640" fill="url(#fade)"/>
+      </svg>
+
+      <div class="hero-content">
+        <p class="hero-kicker">Angkasa Pura · InJourney Airports — pusat pemantauan jaringan domestik</p>
+        <h1>Indonesian Domestic Flight Monitoring</h1>
+        <p class="hero-sub">Ketepatan waktu, arus penumpang, biaya keterlambatan, dan simulasi kebijakan untuk 25 bandara dari Banda Aceh sampai Jayapura.</p>
+        <div class="hero-actions">
+          <button type="button" class="btn-hero primary" data-action="fids">
+            <svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M2 4h20v14H2zm2 2v10h16V6zm2 2h5v2H6zm7 0h5v2h-5zm-7 4h5v2H6zm7 0h5v2h-5zM8 20h8v2H8z"/></svg>
+            Buka papan keberangkatan</button>
+          <button type="button" class="btn-hero" data-action="brief">
+            <svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M6 2h9l5 5v15H6zm8 1.5V8h4.5z"/></svg>
+            Unduh brief eksekutif</button>
+        </div>
+        <div class="hero-meta">
+          <span class="by-chip">Dianalisis oleh <b>M. Naufal Zamani</b></span>
+          <span class="clock-chip" title="Waktu Indonesia Barat"><span class="live-dot"></span><span id="clock">--:--:--</span> WIB</span>
+        </div>
+      </div>
+
+      <p class="hero-credit" id="heroCredit"></p>
+      <dl class="hero-stats">
+        <div><dt>Bandara</dt><dd id="hAirports">0</dd></div>
+        <div><dt>Rute aktif</dt><dd id="hRoutes">0</dd></div>
+        <div><dt>Maskapai</dt><dd id="hAirlines">0</dd></div>
+        <div><dt>Periode data</dt><dd id="hRange">—</dd></div>
+      </dl>
+    </section>
+
+    <div class="wrap">
+      <section class="filters" aria-label="Filter">
+        <label class="field"><span>Periode</span><select id="fPeriod"></select></label>
+        <label class="field"><span>Bandara</span><select id="fAirport"></select></label>
+        <label class="field" id="fSeasonWrap" hidden><span>Musim</span><select id="fSeason"></select></label>
+        <button class="btn-reset" id="btnReset" type="button">Reset filter</button>
+        <div class="filters-note" id="dataBadge">Memuat data…</div>
+      </section>
+
+      <section class="kpis">
+        <article class="kpi">
+          <div class="kpi-head">Total penerbangan</div>
+          <div class="kpi-val" id="kFlights">0</div>
+          <div class="kpi-sub" id="kFlightsSub"></div>
+        </article>
+        <article class="kpi">
+          <div class="kpi-head">OTP nasional</div>
+          <div class="kpi-val"><span id="kOtp">0</span><small>%</small></div>
+          <div class="kpi-sub" id="kOtpSub"></div>
+        </article>
+        <article class="kpi">
+          <div class="kpi-head">Pergerakan penumpang</div>
+          <div class="kpi-val" id="kPax">0</div>
+          <div class="kpi-sub" id="kPaxSub"></div>
+        </article>
+        <article class="kpi">
+          <div class="kpi-head">Rata-rata keterlambatan</div>
+          <div class="kpi-val"><span id="kDelay">0</span><small>mnt</small></div>
+          <div class="kpi-sub" id="kDelaySub"></div>
+        </article>
+        <article class="kpi kpi-money">
+          <div class="kpi-head">Estimasi biaya delay</div>
+          <div class="kpi-val"><small class="pre">Rp</small><span id="kCost">0</span></div>
+          <div class="kpi-sub" id="kCostSub"></div>
+        </article>
+      </section>
+
+      <section class="card insight-sec" id="insight">
+        <div class="card-head">
+          <div><h2>Insight utama &amp; rekomendasi</h2><p>Dihitung otomatis dari data sesuai filter yang aktif</p></div>
+          <span class="target-chip" id="targetChip">Target OTP 85%</span>
+        </div>
+        <div class="insight-grid" id="insightGrid"></div>
+        <div class="reco">
+          <h3>Rekomendasi operasional</h3>
+          <ol id="recoList"></ol>
+        </div>
+      </section>
+
+      <section class="grid-map" id="peta">
+        <article class="card map-card">
+          <div class="card-head">
+            <div><h2>Peta rute Nusantara</h2><p>Tebal garis menunjukkan frekuensi; <span id="mapNote">40 rute teratas</span></p></div>
+            <div class="map-tools">
+              <div class="seg" role="group" aria-label="Jenis peta">
+                <button type="button" data-base="map">Peta</button>
+                <button type="button" data-base="sat" class="on">Satelit</button>
+              </div>
+              <button type="button" class="plane-toggle on" id="btnPlanes" title="Animasi pesawat">
+                <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/></svg>
+                <span>Pesawat</span>
+              </button>
+              <label class="field compact"><span>Maskapai</span><select id="fMapAirline"></select></label>
+            </div>
+          </div>
+          <div class="map-wrap">
+            <div id="map" role="region" aria-label="Peta rute penerbangan Indonesia"></div>
+            <div class="map-legend">
+              <span><i class="lg-hot"></i>5 rute tersibuk</span>
+              <span><i class="lg-route"></i>Rute lain</span>
+              <span><i class="lg-hub"></i>Hub</span>
+              <span><i class="lg-ap"></i>Bandara</span>
+              <span><i class="lg-plane"></i>Pesawat</span>
+            </div>
+          </div>
+          <p class="map-hint">Di HP: geser peta dengan dua jari, cubit untuk zoom.</p>
+          <div class="interp" id="iMap"></div>
+        </article>
+
+        <article class="card">
+          <div class="card-head"><div><h2>Rute tersibuk</h2><p>Jumlah penerbangan dua arah</p></div></div>
+          <ol id="topRoutes" class="rank-list"></ol>
+        </article>
+      </section>
+
+      <section class="card airline-sec" id="maskapai">
+        <div class="card-head">
+          <div><h2>Profil maskapai</h2><p>Pilih maskapai untuk melihat performanya pada periode dan bandara terpilih</p></div>
+          <div class="logo-tools">
+            <button type="button" class="btn-soft" id="btnLogo" title="Pilih file logo yang sudah diunduh">
+              <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zM8.5 13.5l2.5 3 3.5-4.5 4.5 6H5z"/></svg>
+              Pasang logo</button>
+            <button type="button" class="btn-link" id="btnLogoReset">Hapus logo</button>
+            <input type="file" id="logoInput" accept="image/*" multiple hidden>
+          </div>
+        </div>
+        <div id="airlineChips" class="chips" role="tablist"></div>
+        <div class="airline-body">
+          <div class="airline-id">
+            <div class="al-hero-logo" id="alLogo"></div>
+            <h3 id="alName">—</h3>
+            <div class="tags" id="alTags"></div>
+            <div class="gauge" id="gauge"><div><b id="gVal">0%</b><span>On-time</span></div></div>
+          </div>
+          <div class="airline-stats" id="alStats"></div>
+          <div class="airline-side">
+            <div><h4>Rute terbanyak</h4><ol id="alRoutes" class="mini-list"></ol></div>
+            <div><h4>OTP 7 hari vs nasional</h4><div class="spark"><canvas id="cSpark"></canvas></div></div>
+          </div>
+        </div>
+        <div class="interp" id="iAirline"></div>
+      </section>
+
+      <section class="grid-2" id="analitik">
+        <article class="card">
+          <div class="card-head"><div><h2>Sebaran durasi delay</h2><p id="histNote">Persentase penerbangan per kelompok durasi</p></div></div>
+          <div class="chart-box"><canvas id="cHist"></canvas></div>
+          <div class="interp" id="iHist"></div>
+        </article>
+        <article class="card">
+          <div class="card-head"><div><h2>Ketepatan waktu per maskapai</h2><p id="otpNote">OTP = berangkat ≤ 15 menit dari jadwal</p></div></div>
+          <div class="chart-box"><canvas id="cOtp"></canvas></div>
+          <div class="interp" id="iOtp"></div>
+        </article>
+        <article class="card">
+          <div class="card-head"><div><h2>Penyebab keterlambatan</h2><p>Penerbangan delay lebih dari 15 menit</p></div></div>
+          <div class="chart-box"><canvas id="cCause"></canvas></div>
+          <div class="interp" id="iCause"></div>
+        </article>
+        <article class="card terminal-card" id="terminalCard">
+          <div class="card-head"><div><h2>Utilisasi gate terminal Soekarno-Hatta</h2><p>Kebutuhan gate pada jam puncak dibanding gate tersedia</p></div></div>
+          <div class="term-list" id="termList"></div>
+          <div class="interp" id="iTerm"></div>
+        </article>
+        <article class="card span-2">
+          <div class="card-head"><div><h2>Tren harian</h2><p id="trendNote">Jumlah penerbangan, OTP harian, dan rata-rata bergerak 7 hari</p></div></div>
+          <div class="chart-box"><canvas id="cTrend"></canvas></div>
+          <div class="interp" id="iTrend"></div>
+        </article>
+      </section>
+
+      <section class="grid-2" id="pola">
+        <article class="card span-2" id="seasonCard" hidden>
+          <div class="card-head"><div><h2>Dampak musim: mudik Lebaran, Nataru, dan libur sekolah</h2><p>Rata-rata penerbangan per hari, tingkat delay, dan load factor tiap musim</p></div></div>
+          <div class="chart-box"><canvas id="cSeason"></canvas></div>
+          <div class="interp" id="iSeason"></div>
+        </article>
+        <article class="card">
+          <div class="card-head"><div><h2>Pola jam sibuk</h2><p>Jumlah penerbangan dan tingkat delay per jam jadwal</p></div></div>
+          <div class="chart-box"><canvas id="cHour"></canvas></div>
+          <div class="interp" id="iHour"></div>
+        </article>
+        <article class="card">
+          <div class="card-head"><div><h2>Peta panas delay: hari × jam</h2><p>Warna makin pekat berarti makin sering delay lebih dari 15 menit</p></div></div>
+          <div class="heatmap" id="heatmap"></div>
+          <div class="heat-scale"><span>rendah</span><i></i><span>tinggi</span></div>
+          <div class="interp" id="iHeat"></div>
+        </article>
+        <article class="card span-2">
+          <div class="card-head"><div><h2>Trafik vs ketepatan waktu per bandara</h2><p>Sumbu X pergerakan, sumbu Y OTP, ukuran gelembung jumlah penumpang</p></div></div>
+          <div class="chart-box tall"><canvas id="cAirport"></canvas></div>
+          <div class="interp" id="iAirport"></div>
+        </article>
+      </section>
+
+      <section class="card sim-sec" id="simulasi">
+        <div class="card-head">
+          <div><h2>Simulasi kebijakan</h2><p>Uji dampak keputusan operasional terhadap OTP dan biaya sebelum diterapkan</p></div>
+          <button type="button" class="btn-link" id="simReset">Kembalikan ke kondisi saat ini</button>
+        </div>
+        <div class="sim-grid">
+          <div class="sim-controls">
+            <label class="slider">
+              <span class="sl-top"><b>Geser penerbangan 17.00–21.00 ke 10.00–15.00</b><output id="v_shift">0%</output></span>
+              <input type="range" id="s_shift" min="0" max="40" step="5" value="0">
+              <small>Redistribusi slot jam sibuk sore ke siang hari</small>
+            </label>
+            <label class="slider">
+              <span class="sl-top"><b>Kurangi delay faktor internal maskapai</b><output id="v_internal">0%</output></span>
+              <input type="range" id="s_internal" min="0" max="50" step="5" value="0">
+              <small>Program perbaikan operasional, rotasi, dan kesiapan teknis</small>
+            </label>
+            <label class="slider">
+              <span class="sl-top"><b>Buffer turnaround untuk LCC</b><output id="v_buffer">0 mnt</output></span>
+              <input type="range" id="s_buffer" min="0" max="20" step="5" value="0">
+              <small>Tambahan waktu terjadwal di darat untuk maskapai berbiaya rendah</small>
+            </label>
+            <label class="cost-field">
+              <span>Asumsi biaya per menit delay (Rp per penerbangan)</span>
+              <input type="text" inputmode="numeric" id="costInput">
+              <small>Mencakup avtur, kru, dan ground handling. Kompensasi penumpang dihitung terpisah sesuai PM 89/2015.</small>
+            </label>
+          </div>
+          <div class="sim-result">
+            <div class="sim-otp">
+              <div><span>OTP saat ini</span><b id="simOtp0">–</b></div>
+              <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path fill="currentColor" d="M4 11h12.2l-4.6-4.6L13 5l7 7-7 7-1.4-1.4 4.6-4.6H4z"/></svg>
+              <div class="after"><span>OTP skenario</span><b id="simOtp1">–</b></div>
+            </div>
+            <p class="sim-delta" id="simDelta">+0,0 poin persen</p>
+            <p class="sim-target" id="simTarget"></p>
+            <dl class="sim-facts">
+              <div><dt>Delay dihindari</dt><dd id="simAvoid">0</dd></div>
+              <div><dt>Menit delay berkurang</dt><dd id="simMinutes">0</dd></div>
+              <div><dt>Estimasi penghematan</dt><dd id="simSaved">Rp 0</dd></div>
+              <div><dt>Penerbangan dipindah</dt><dd id="simMoved">0</dd></div>
+            </dl>
+            <div class="chart-box short"><canvas id="cSim"></canvas></div>
+          </div>
+        </div>
+        <div class="interp" id="iSim"></div>
+      </section>
+
+      <section class="card model-sec" id="model">
+        <div class="card-head">
+          <div><h2>Skor risiko delay</h2><p>Peluang delay lebih dari 15 menit per maskapai × jam, dari model di <code>analysis/delay_risk_model.ipynb</code></p></div>
+          <span class="py-chip">Python · scikit-learn</span>
+        </div>
+        <div id="modelEmpty" class="model-empty">
+          Hasil model belum ditemukan. Jalankan <code>analysis/delay_risk_model.ipynb</code> untuk membuat <code>data/delay_risk.csv</code>, <code>data/feature_importance.csv</code>, dan <code>data/model_metrics.json</code>, lalu muat ulang halaman ini.
+        </div>
+        <div id="modelBody" hidden>
+          <div class="model-chips" id="modelChips"></div>
+          <div class="model-grid">
+            <div>
+              <h4>Peta risiko maskapai × jam keberangkatan</h4>
+              <div class="heatmap risk" id="riskHeat"></div>
+              <div class="heat-scale"><span>risiko rendah</span><i></i><span>tinggi</span></div>
+            </div>
+            <div>
+              <h4>Faktor pendorong delay (permutation importance)</h4>
+              <div class="chart-box"><canvas id="cImportance"></canvas></div>
+            </div>
+          </div>
+          <div class="interp" id="iModel"></div>
+        </div>
+      </section>
+
+      <section class="card stats-sec" id="statistik">
+        <div class="card-head">
+          <div><h2>Model statistik</h2><p>Peramalan SARIMA, distribusi durasi delay, dan regresi logistik dengan parameter hasil estimasi</p></div>
+          <span class="py-chip">NumPy · SciPy</span>
+        </div>
+        <div id="statsEmpty" class="model-empty">
+          Hasil model statistik belum ditemukan. Jalankan <code>analysis/statistical_models.ipynb</code> untuk membuat <code>data/forecast.csv</code> dan <code>data/stat_models.json</code>.
+        </div>
+        <div id="statsBody" hidden>
+          <div class="forecast">
+            <h4>Ramalan penumpang harian 14 hari dengan selang prediksi 95%</h4>
+            <div class="chart-box"><canvas id="cForecast"></canvas></div>
+            <div class="interp" id="iForecast"></div>
+          </div>
+          <div class="formula-grid">
+            <article class="formula">
+              <h3>SARIMA dengan regresor musim</h3>
+              <div class="tex" id="texSarima"></div>
+              <div class="tex small" id="texSarimaReg"></div>
+              <ul id="sarimaFacts"></ul>
+            </article>
+            <article class="formula">
+              <h3>Distribusi Gamma untuk durasi delay</h3>
+              <div class="tex" id="texGamma"></div>
+              <ul id="gammaFacts"></ul>
+            </article>
+            <article class="formula">
+              <h3>Regresi logistik biner</h3>
+              <div class="tex" id="texLogit"></div>
+              <ul id="logitFacts"></ul>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" id="rute">
+        <div class="card-head"><div><h2>Kinerja 15 rute utama</h2><p>Diurutkan berdasarkan jumlah penerbangan</p></div></div>
+        <div class="table-wrap">
+          <table class="tbl">
+            <thead><tr><th>#</th><th>Rute</th><th>Kota</th><th class="num">Penerbangan</th><th class="num">Penumpang</th><th class="num">OTP</th><th class="num">Avg delay*</th><th>Maskapai dominan</th></tr></thead>
+            <tbody id="routeTable"></tbody>
+          </table>
+        </div>
+        <p class="foot-note">*Rata-rata durasi pada penerbangan yang terlambat lebih dari 15 menit.</p>
+      </section>
+
+      <footer class="site-foot">
+        <div class="foot-brand">
+          <span class="sb-mark" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/></svg></span>
+          <div>Dirancang dan dikembangkan oleh <b>M. Naufal Zamani</b>, Magister Statistika ITS, 2026</div>
+        </div>
+        <p>Proyek portofolio. Data simulasi untuk demonstrasi, tidak mewakili kinerja resmi maskapai atau bandara dan tidak berafiliasi dengan InJourney Airports. Biaya delay memakai asumsi yang dapat diubah; kompensasi mengacu PM 89/2015. Logo milik masing-masing pemegang merek.</p>
+      </footer>
+    </div>
+  </div>
+
+  <div class="fids" id="fids" hidden role="dialog" aria-modal="true" aria-labelledby="fidsTitle">
+    <div class="fids-board">
+      <header class="fids-head">
+        <div class="fids-title">
+          <svg viewBox="0 0 24 24" width="30" height="30"><path fill="currentColor" d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z" transform="rotate(45 12 12)"/></svg>
+          <div><h2 id="fidsTitle">Keberangkatan <span>Departures</span></h2><p id="fidsDate"></p></div>
+        </div>
+        <select id="fidsAirport" aria-label="Pilih bandara"></select>
+        <div class="fids-clock" id="fidsClock">--:--</div>
+        <button type="button" class="fids-close" id="fidsClose" aria-label="Tutup papan">✕</button>
+      </header>
+      <div class="fids-scroll">
+        <table class="fids-table">
+          <thead><tr><th>Waktu</th><th>Penerbangan</th><th>Tujuan</th><th>Terminal</th><th>Gate</th><th>Status</th></tr></thead>
+          <tbody id="fidsBody"></tbody>
+        </table>
+      </div>
+      <p class="fids-note" id="fidsNote"></p>
+    </div>
+  </div>
+
+  <div id="brief" class="brief" aria-hidden="true"></div>
+
+  <div id="overlay" class="overlay" hidden>
+    <div class="overlay-card">
+      <h2>Data belum termuat</h2>
+      <p>Browser memblokir pembacaan file lokal kalau <code>index.html</code> dibuka dengan dobel-klik. Pilih salah satu:</p>
+      <ol>
+        <li>Di VS Code, klik kanan <code>index.html</code> lalu pilih <b>Open with Live Server</b>.</li>
+        <li>Atau pilih langsung file <code>airlines.csv</code>, <code>airports.csv</code>, dan <code>flights.csv</code>.</li>
+      </ol>
+      <button class="btn primary" id="btnOverlayLoad">Pilih file CSV</button>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" hidden></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
