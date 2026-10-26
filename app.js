@@ -129,7 +129,7 @@ function dowOf(date) {   // Senin = 0 … Minggu = 6
 
 /* Logo maskapai: kolom "logo" di airlines.csv, atau otomatis assets/logos/<KODE>.png.
    Kalau file gambar tidak ada, tampil badge kode berwarna. */
-const LOGO_DIR = 'assets/logos/';
+const LOGO_DIR = '';
 const LOGO_EXT = ['png', 'svg', 'webp', 'jpg', 'jpeg'];
 S.logoOverride = {};
 try { S.logoOverride = JSON.parse(localStorage.getItem('nfm-logos') || '{}') || {}; } catch (e) { S.logoOverride = {}; }
