@@ -1,0 +1,26 @@
+FOLDER LOGO MASKAPAI
+====================
+CARA PALING GAMPANG: unduh logonya (mis. dari Wikimedia Commons, cari
+"Garuda Indonesia logo"), lalu di dashboard klik tombol "Pasang logo" di kartu
+Profil Maskapai dan pilih semua file sekaligus. Nama file bebas asal memuat nama
+maskapai (mis. garuda-indonesia-logo.svg, Lion_Air.png). Logo tersimpan di browser.
+
+CARA PERMANEN (ikut terbawa saat proyek dibagikan / di-hosting):
+Taruh file logo di folder ini dengan nama = kode maskapai (sesuai airlines.csv).
+Format .png, .svg, .webp, atau .jpg semua dikenali otomatis:
+
+  GA.png  -> Garuda Indonesia
+  QG.png  -> Citilink
+  ID.png  -> Batik Air
+  JT.png  -> Lion Air
+  IU.png  -> Super Air Jet
+  IW.png  -> Wings Air
+  IP.png  -> Pelita Air
+  QZ.png  -> Indonesia AirAsia
+
+Tips:
+- Pakai PNG berlatar transparan/putih, kira-kira 200-400 px lebar.
+- Logo otomatis muncul di tombol maskapai, kartu profil, dan tabel rute.
+- Kalau file tidak ada, dashboard menampilkan badge kode berwarna (tidak error).
+- Mau pakai format/nama lain (mis. .svg)? Tambah kolom "logo" di airlines.csv
+  berisi path-nya, contoh: assets/logos/garuda.svg

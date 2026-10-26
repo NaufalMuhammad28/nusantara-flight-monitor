@@ -1,0 +1,13 @@
+feature,label,importance
+airline,Maskapai,0.04466
+hour,Jam keberangkatan,0.03029
+season,Musim,0.01781
+cgk,Rute via CGK,0.01713
+type,Tipe layanan,0.01256
+dest,Bandara tujuan,0.0055
+origin,Bandara asal,0.00421
+rainy,Musim hujan,0.00146
+weekend,Akhir pekan,0.00125
+distance_km,Jarak rute,7e-05
+congestion,Kepadatan bandara (jam yg sama),-0.0
+dow,Hari,-0.00026

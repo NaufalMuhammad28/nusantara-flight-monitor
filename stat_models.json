@@ -1,0 +1,33 @@
+{
+  "sarima": {
+    "model": "SARIMA(0,1,2)(0,1,1)7",
+    "aic": -2220.5,
+    "bic": -2189.4,
+    "sigma2": 0.001687082185302336,
+    "phi": [],
+    "Phi": [],
+    "theta": [
+      -0.6231431847426792,
+      -0.15824014740093742
+    ],
+    "Theta": [
+      -0.9243107731269589
+    ],
+    "efek_lebaran_pct": 79.0,
+    "efek_nataru_pct": 42.6,
+    "mape_backtest": 3.59,
+    "mape_naive": 4.08,
+    "ljung_box_p14": 0.077,
+    "adf_diff": -11.5,
+    "metode": "CSS (sarima_lite, NumPy/SciPy)"
+  },
+  "delay_dist": {
+    "terbaik_aic": "Gamma",
+    "gamma_alpha": 1.074,
+    "gamma_beta": 37.89,
+    "p_gt60": 0.334,
+    "p_gt240": 0.00316,
+    "p_gt60_empiris": 0.3286,
+    "n": 23139
+  }
+}

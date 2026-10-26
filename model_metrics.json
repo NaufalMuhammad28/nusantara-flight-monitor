@@ -1,0 +1,25 @@
+{
+  "model_terbaik": "Logistic Regression",
+  "roc_auc_lr": 0.6413,
+  "roc_auc_rf": 0.6353,
+  "pr_auc_lr": 0.2754,
+  "pr_auc_rf": 0.2715,
+  "prevalensi_uji": 0.1711,
+  "lift_desil_1": 1.93,
+  "n_latih": 76415,
+  "n_uji": 59754,
+  "periode_latih": "2025",
+  "periode_uji": "Jan–Sep 2026",
+  "intercept_lr": -0.8696,
+  "odds_ratio": {
+    "airline_GA": 0.695,
+    "airline_IP": 0.603,
+    "airline_JT": 1.446,
+    "type_Full Service": 0.704,
+    "type_LCC": 0.979,
+    "season_Lebaran": 1.201,
+    "season_Reguler": 0.638,
+    "hour": 1.255,
+    "cgk": 1.222
+  }
+}

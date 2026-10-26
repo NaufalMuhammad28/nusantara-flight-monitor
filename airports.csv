@@ -1,0 +1,26 @@
+iata,airport_name,city,province,lat,lon,is_hub
+CGK,Soekarno-Hatta,Jakarta,Banten,-6.1256,106.6559,true
+SUB,Juanda,Surabaya,Jawa Timur,-7.3798,112.7868,true
+DPS,I Gusti Ngurah Rai,Denpasar,Bali,-8.7482,115.1672,true
+UPG,Sultan Hasanuddin,Makassar,Sulawesi Selatan,-5.0616,119.554,true
+KNO,Kualanamu,Medan,Sumatera Utara,3.6422,98.8853,true
+BPN,Sultan Aji Muhammad Sulaiman Sepinggan,Balikpapan,Kalimantan Timur,-1.2683,116.8945,true
+YIA,Yogyakarta International,Yogyakarta,DI Yogyakarta,-7.9007,110.0573,false
+SRG,Jenderal Ahmad Yani,Semarang,Jawa Tengah,-6.9727,110.375,false
+PLM,Sultan Mahmud Badaruddin II,Palembang,Sumatera Selatan,-2.8983,104.6999,false
+PDG,Minangkabau,Padang,Sumatera Barat,-0.7869,100.2809,false
+PKU,Sultan Syarif Kasim II,Pekanbaru,Riau,0.4608,101.4445,false
+BTH,Hang Nadim,Batam,Kepulauan Riau,1.121,104.119,false
+BTJ,Sultan Iskandar Muda,Banda Aceh,Aceh,5.5229,95.4206,false
+TKG,Radin Inten II,Bandar Lampung,Lampung,-5.2406,105.1756,false
+DJB,Sultan Thaha,Jambi,Jambi,-1.638,103.644,false
+PNK,Supadio,Pontianak,Kalimantan Barat,-0.1507,109.4039,false
+BDJ,Syamsudin Noor,Banjarmasin,Kalimantan Selatan,-3.4424,114.7625,false
+MDC,Sam Ratulangi,Manado,Sulawesi Utara,1.5493,124.9259,false
+PLW,Mutiara SIS Al-Jufri,Palu,Sulawesi Tengah,-0.9185,119.9095,false
+LOP,Zainuddin Abdul Madjid,Lombok,Nusa Tenggara Barat,-8.7573,116.2767,false
+KOE,El Tari,Kupang,Nusa Tenggara Timur,-10.1716,123.6711,false
+AMQ,Pattimura,Ambon,Maluku,-3.7103,128.0891,false
+SOQ,Domine Eduard Osok,Sorong,Papua Barat Daya,-0.8941,131.287,false
+TIM,Mozes Kilangin,Timika,Papua Tengah,-4.5283,136.8873,false
+DJJ,Sentani,Jayapura,Papua,-2.577,140.516,false

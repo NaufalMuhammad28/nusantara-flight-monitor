@@ -1,0 +1,9 @@
+airline_code,airline_name,group,type,fleet_active,color
+GA,Garuda Indonesia,Garuda Indonesia Group,Full Service,72,#0b4f8a
+QG,Citilink,Garuda Indonesia Group,LCC,54,#2bb3a3
+ID,Batik Air,Lion Air Group,Full Service,80,#8a1c3c
+JT,Lion Air,Lion Air Group,LCC,110,#d64545
+IU,Super Air Jet,Lion Air Group,LCC,60,#e8a317
+IW,Wings Air,Lion Air Group,Regional,50,#5b6bd6
+IP,Pelita Air,Pelita Air Service,Medium Service,14,#14866d
+QZ,Indonesia AirAsia,AirAsia Group,LCC,20,#c2185b
